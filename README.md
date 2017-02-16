@@ -29,13 +29,22 @@ Sin embargo, en este laboratorio usaremos la de usuario-contraseña
 En la sección de overview haga clic sobre el icono de "Añadir Firebase a su aplicación Web", copie
 el script que se genera en este paso, incluyalo en el index.html dentro de la etiqueta <head>
 
-Para integrar angular con Firebase usaremos esta libería, instale la libreria en el proyecto de ionic
+Para integrar angular con Firebase usaremos [esta](https://github.com/firebase/angularfire) libería, instale 
+la libreria en el proyecto de ionic
  
 ```bash
 bower install angularfire --save
 ```
  
-inyecte el modulo de firebase en su aplicación.
+inyecte el modulo de firebase en su aplicación e incluya el archivo en el index.html
+
+```html
+    ...
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    
+    <script src="lib/angularfire/dist/angularfire.min.js"></script>
+    ...
+```
 
 ```javascript
 angular.module('starter', ['ionic', 'starter.controllers', 'firebase'])
@@ -61,7 +70,7 @@ angular.module('starter.services', [])
     })
 ```
 
-No olvide inyectar este nuevo modulo dentro de su aplicación.
+No olvide inyectar este nuevo modulo dentro de su aplicación, ademas de incluir el archivo en el index.html.
 
 ### Registro
 
@@ -81,7 +90,10 @@ Recuerde que estos metodos devuelven objetos de tipo "Promise" ya que son llamad
 Cree una nueva vista, ruta y controlador desde donde pueda registrar a un usuario usando email y contraseña, 
 en el controlador inyecte el servicio de usuarios para poder usar la funcionalidad de registro creada en el punto anterior.
  
- 
+El resultado final debe ser:
+
+![alt text](http://i.giphy.com/26xBssIjJgsTcdqtq.gif)
+
 
 ### Autenticación
 
@@ -100,5 +112,3 @@ auth.$signInWithEmailAndPassword(username, password).then(function () {
 El objetivo de este servicio, es que pueda ser utilizado en otros controladores, por ejemplo en el controlador de la aplicación
 "AppCtrl" que actualmente esta creado en el template. Despues de implementar la función de autenticación, inyecte el servicio
 en este controlador y remplaze la implementación de la funcion "doLogin" para incluir la función del servicio de usuarios.
-
- 
