@@ -218,4 +218,5 @@ Los controladores deben quedar al final de la siguiente manera
 ```
 
 Este debe ser el resultado final:
+
 ![alt text](http://i.giphy.com/26xByyFtftHmdWghy.gif)
