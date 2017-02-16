@@ -112,3 +112,110 @@ auth.$signInWithEmailAndPassword(username, password).then(function () {
 El objetivo de este servicio, es que pueda ser utilizado en otros controladores, por ejemplo en el controlador de la aplicación
 "AppCtrl" que actualmente esta creado en el template. Despues de implementar la función de autenticación, inyecte el servicio
 en este controlador y remplaze la implementación de la funcion "doLogin" para incluir la función del servicio de usuarios.
+
+
+Dentro del servicio de usuarios, implemente el siguiente metodo para obtener información sobre el usuario que se autenticó
+
+```javascript
+angular.module('starter.services', [])
+
+    .service('UserService', function ($firebaseAuth) {
+        var auth = $firebaseAuth();
+        
+        ...
+
+        this.getUser = function () {
+            return auth.$getAuth();
+        };
+    });
+```
+
+Este metodo puede ser usado para onbtener el ID del usuario, esta información se puede usar para relacionar otros datos usando
+ el servicio de la base de datos en tiempo real de firebase.
+ 
+## Firebase Storage: Real time Database
+
+Usaremos este servicio para guardar información relacionada con el usuario, los datos en firebase se almacenan usando una 
+estructura anidada de nombres, parecido al sistema de archivos con carpetas. Usando la libreria de firebase para angular
+construya un servicio que se encargue de la interacción con la base de datos. Este servicio debe tener las siguientes funciones
+
+* createPlaylist(userId, name, description)
+* getPlaylist(userId)
+
+Usando el siguiente ejemplo, cree, por cada usuario, una lista de playlist. La estructura sugerida para firebase es:
+
+```bash
+-playlist
+--{user_id_1}
+---{name:'nombre',description:'descripcion'}
+---{name:'nombre 2',description:'descripcion'}
+---{name:'nombre 3',description:'descripcion'}
+---{name:'nombre 4',description:'descripcion'}
+...
+
+```
+
+para insertar elementos en firebase guiese por el siguiente ejemplo
+
+```javascript
+firebaseRef.child('playlist').child(userId).push({
+    name: name,
+    description: description
+}).then(function (res) {
+    ....
+});
+```
+
+para leer informacion en firebase guiese por el siguiente ejemplo
+
+```javascript
+firebase.database().ref().child('playlist').child(userId).once('value', function (snapshot) {
+    snapshot.val();
+});
+```
+
+Los controladores deben quedar al final de la siguiente manera
+
+```javascript
+    ...
+
+    .controller('PlaylistCreateCtrl', function ($scope, $state, DataService, UserService) {
+        $scope.data = {};
+
+        var user = UserService.getUser();
+
+        $scope.createPlaylist = function () {
+            DataService.createPlaylist(user.uid, $scope.data.name, $scope.data.description).then(function (res) {
+                console.log(res);
+
+                $state.go('app.playlists');
+            });
+        };
+
+        $scope.$on("$ionicView.enter", function (event, data) {
+            $scope.data = {};
+        });
+    })
+
+    .controller('PlaylistsCtrl', function ($scope, UserService, DataService) {
+        $scope.playlists = [];
+
+        var user = UserService.getUser();
+
+        function loadPlaylist() {
+            DataService.getPlaylist(user.uid).then(function (res) {
+                console.log(res);
+                $scope.playlists = res;
+            });
+        }
+
+        $scope.$on("$ionicView.enter", function (event, data) {
+            loadPlaylist();
+        });
+    })
+    
+    ...
+```
+
+Este debe ser el resultado final:
+![alt text](http://i.giphy.com/26xByyFtftHmdWghy.gif)
