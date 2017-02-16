@@ -217,6 +217,8 @@ Los controladores deben quedar al final de la siguiente manera
     ...
 ```
 
+Verifique que existan datos en la consola de firebase en la pestaña de Database.
+
 Este debe ser el resultado final:
 
 ![alt text](http://i.giphy.com/26xByyFtftHmdWghy.gif)
